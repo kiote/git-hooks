@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+html_path = "spec_results.html"
+
+`rspec --format html spec > #{html_path}`
+
+html = open(html_path).read
+
+examples = html.match(/(\d+) examples/)[0].to_i rescue 0
+failures = html.match(/(\d+) failures/)[0].to_i rescue 0
+pending = html.match(/(\d+) pending/)[0].to_i rescue 0
+if failures.zero?
+  puts "0 failures! #{examples} run, #{pending} pending"
+else
+  puts "\aDID NOT COMMIT YOUR FILES!"
+  puts "View spec results at #{File.expand_path(html_path)}"
+  puts
+  puts "#{failures} failures! #{examples} run, #{pending} pending"
+  exit 1
+end
